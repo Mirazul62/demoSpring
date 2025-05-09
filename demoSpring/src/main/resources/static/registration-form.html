@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+</head>
+<body>
+<h1>Create User</h1>
+<form id="userForm">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+
+<p id="result"></p>
+
+<script>
+    const form = document.getElementById('userForm');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const user = {
+            name: form.name.value,
+            email: form.email.value,
+            password: form.password.value
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/user/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create user');
+            }
+
+            const resultData = await response.json();
+            result.textContent = `User created with ID: ${resultData.id}`;
+        } catch (error) {
+            result.textContent = `Error: ${error.message}`;
+        }
+    });
+</script>
+</body>
+</html>

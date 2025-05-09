@@ -56,6 +56,19 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User loginUser) {
+        return userRepo.findByEmail(loginUser.getEmail())
+                .map(user -> {
+                    if (user.getPassword().equals(loginUser.getPassword())) {
+                        return ResponseEntity.ok(user); // return user info
+                    } else {
+                        return ResponseEntity.status(401).body("Invalid password");
+                    }
+                })
+                .orElse(ResponseEntity.status(404).body("User not found"));
+    }
+
 
 
 

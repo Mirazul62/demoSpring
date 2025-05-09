@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Form</title>
+</head>
+<body>
+<h1>Create Student</h1>
+<form id="studentForm">
+    <label for="userName">User Name:</label><br>
+    <input type="text" id="userName" name="userName" required><br><br>
+
+    <label for="roll">Roll:</label><br>
+    <input type="number" id="roll" name="roll" required><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+
+<p id="result"></p>
+
+<script>
+    const form = document.getElementById('studentForm');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            userName: form.userName.value,
+            roll: parseInt(form.roll.value)
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/students', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const resultData = await response.json();
+            result.textContent = `Student created with ID: ${resultData.id}`;
+        } catch (error) {
+            result.textContent = `Error: ${error.message}`;
+        }
+    });
+</script>
+</body>
+</html>
